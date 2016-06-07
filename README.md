@@ -1,10 +1,8 @@
 # specter-core-matrix
 
-A Clojure library designed to ... well, that part is up to you.
+An experiment trying to get [Specter](https://github.com/nathanmarz/specter) to work with [core.matrix](https://github.com/mikera/core.matrix) datasets.
 
-## Usage
-
-FIXME
+Look to the tests to see what this kind of looks like. At the moment it's not looking super promising, generally rows seems to produce good looking paths, but is inefficent. The column navigation is running in to trouble when it comes to deriving columns. However, there is one more thing to try.
 
 ## License
 
