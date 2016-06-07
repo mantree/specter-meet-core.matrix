@@ -31,7 +31,13 @@
       (nth col-values i))
     (nth [m i not-found]
       (nth col-values i not-found))
-  
+  clojure.lang.IPersistentVector   
+    (length [m] (count col-values))
+    (assocN [m i v]
+                                        ;(assoc (mp/convert-to-nested-vectors m) i v)
+                                        ;not sure what to do here
+      (prn "ASSOCING")
+      )  
     clojure.lang.IPersistentCollection   
     (empty [_]
       (DataSetColumn. col-name []))
@@ -152,6 +158,7 @@
                          (cm/columns structure)))]
      (ds/dataset (keys (.col-name->index (first results)))
                  results))))
+
 
 (sm/defnav as-map
   []

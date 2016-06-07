@@ -77,25 +77,38 @@
         (sm/transform [rows s/ALL]
                       #(assoc % :c 9)
                       ds1)))
+    (comment "Fails as column looks like a vector, so gets turned into a vector by Specter"
+      (is
+       (= fixed-c
+          (sm/transform [columns s/END]
+                        (fn [& a]
+                          (->DataSetColumn [:c] [(vec (repeat 3 9))]))
+                        ds1))))
     (is
      (= fixed-c
-        (sm/transform [columns s/END]
-                      (fn [& a]
-                        (prn a)
-                        (->DataSetColumn [:c] [(vec (repeat 3 9))]))
+        (sm/transform [as-map]
+                      (fn [m]
+                        (assoc m :c (vec (repeat 3 9))))
                       ds1)))))
 
-(comment
-  (deftest deride-column
-    (let [derided-c (d [:a :b :c] (mapv #(conj % (apply * %)) raw-ds1))]
-      (is
-       (= derided-c
-          (sm/transform [rows s/ALL]
-                        #(assoc % :c (* (:a %) (:b %)))
-                        ds1)))
-      (is
-       (= derided-c
-          (sm/transform [columns s/ALL ]))))))
+(deftest derive-column
+  (let [derived-c (d [:a :b :c] (mapv #(conj % (apply * %)) raw-ds1))]
+    (is
+     (= derived-c
+        (sm/transform [rows s/ALL]
+                      #(assoc % :c (* (:a %) (:b %)))
+                      ds1)))
+    (comment "Just too damn hard"
+             (is
+              (= derived-c
+                 (sm/transform [columns s/ALL ]))))
+    (is
+     (= derived-c
+        (sm/transform [as-map (s/collect-one :a) (s/collect-one :b)]
+                      (fn [a b m]
+                        (assoc m :c (map * a b)))
+                      ds1))
+     "A pretty crummy way of deriving c")))
 
 ; Transform rows where :a is even?, by inc'ing :b
 
